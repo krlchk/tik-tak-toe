@@ -13,7 +13,7 @@ import clsx from "clsx";
 
 export function UiButton({ children, className, size, variant }) {
   const buttonClassName = clsx(
-    "transition-colors font-normal rounded-lg font-Inter leading-7 py-2 ",
+    "transition-colors font-normal rounded-lg font-Inter leading-7 py-2",
     className,
     {
       md: "px-6 text-md",
