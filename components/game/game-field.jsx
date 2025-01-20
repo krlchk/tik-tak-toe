@@ -1,26 +1,16 @@
 import clsx from "clsx";
 import { UiButton } from "../uikit";
-import { useState } from "react";
-import { GAME_SYMBOLS } from "./constants";
 import { GameSymbol } from "./game-symbol";
 
-const MOVE_ORDER = [
-  GAME_SYMBOLS.CROSS,
-  GAME_SYMBOLS.ROUND,
-  GAME_SYMBOLS.TRIANGLE,
-  GAME_SYMBOLS.SQUARE,
-];
-
-function getNextMove(currentMove) {
-  const getMoveIndex = MOVE_ORDER.indexOf(currentMove) + 1;
-  return MOVE_ORDER[getMoveIndex] ?? MOVE_ORDER[0];
-}
-
-export function GameField({ className }) {
-  const [cells, setCells] = useState(() => new Array(19 * 19).fill(null));
-  const [currentMove, setCurrentMove] = useState(GAME_SYMBOLS.CROSS);
-  const nextMove = getNextMove(currentMove);
-
+export function GameField({
+  className,
+  cells,
+  currentMove,
+  nextMove,
+  handleCellClick,
+  winnerSequence,
+  winnerSymbol
+}) {
   const actions = (
     <div className="flex gap-3">
       <UiButton size="md" children="Ничья" variant="primary" />
@@ -36,8 +26,17 @@ export function GameField({ className }) {
         nextMove={nextMove}
       />
       <GameGrid>
-        {cells.map((_, index) => (
-          <GameCell key={index}></GameCell>
+        {cells.map((symbol, index) => (
+          <GameCell
+            disabled={!!winnerSymbol}
+            isWinner={winnerSequence?.includes(index)}
+            key={index}
+            onCLick={() => {
+              handleCellClick(index);
+            }}
+          >
+            {symbol && <GameSymbol className="h-5 w-5" symbol={symbol} />}
+          </GameCell>
         ))}
       </GameGrid>
     </GameFieldLayout>
@@ -83,11 +82,17 @@ function GameGrid({ children }) {
   );
 }
 
-function GameCell({ children }) {
+function GameCell({ children, onCLick, isWinner, disabled }) {
   return (
-    <button className="-ml-px -mt-px flex items-center justify-center border border-slate-400">
+    <button
+      disabled={disabled}
+      onClick={onCLick}
+      className={clsx(
+        "-ml-px -mt-px flex items-center justify-center border border-slate-400",
+        isWinner && "bg-red-300",
+      )}
+    >
       {children}
     </button>
   );
 }
-// 24.14
