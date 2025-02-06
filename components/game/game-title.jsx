@@ -31,5 +31,3 @@ export function GameTitle({ playersCount }) {
     </div>
   );
 }
-
-// 16.34
